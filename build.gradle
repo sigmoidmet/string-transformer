@@ -10,6 +10,7 @@ version = '1.0-SNAPSHOT'
 ext {
     junitVersion = '5.12.0'
     lombokVersion = '1.18.36'
+    mongockVersion = '5.5.0'
 }
 
 repositories {
@@ -21,15 +22,19 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-web',
             'org.springframework.boot:spring-boot-starter-validation',
             'org.springframework.boot:spring-boot-starter-data-mongodb',
+
+            platform("io.mongock:mongock-bom:$mongockVersion"),
+            "io.mongock:mongock-springboot-v3",
+            "io.mongock:mongodb-springdata-v4-driver",
     )
 
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
     testImplementation(
-            platform("org.junit:junit-bom:${junitVersion}"),
+            platform("org.junit:junit-bom:$junitVersion"),
             'org.junit.jupiter:junit-jupiter',
             'org.springframework.boot:spring-boot-starter-test',
             "org.springframework.boot:spring-boot-starter-webflux",

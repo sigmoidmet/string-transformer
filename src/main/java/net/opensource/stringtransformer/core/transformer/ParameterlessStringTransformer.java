@@ -1,7 +1,7 @@
 package net.opensource.stringtransformer.core.transformer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import net.opensource.stringtransformer.data.parameters.EmptyTransformParameters;
+import net.opensource.stringtransformer.data.dto.parameters.EmptyTransformParameters;
 
 public interface ParameterlessStringTransformer extends StringTransformer<EmptyTransformParameters> {
 

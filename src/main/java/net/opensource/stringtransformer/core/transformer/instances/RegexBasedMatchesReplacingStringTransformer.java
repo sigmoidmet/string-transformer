@@ -2,7 +2,7 @@ package net.opensource.stringtransformer.core.transformer.instances;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import net.opensource.stringtransformer.core.transformer.StringTransformer;
-import net.opensource.stringtransformer.data.parameters.RegexBasedMatchesReplacingStringTransformerParameters;
+import net.opensource.stringtransformer.data.dto.parameters.RegexBasedMatchesReplacingStringTransformerParameters;
 import org.springframework.stereotype.Component;
 
 @Component

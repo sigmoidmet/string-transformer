@@ -1,4 +1,4 @@
-package net.opensource.stringtransformer.data.parameters;
+package net.opensource.stringtransformer.data.dto.parameters;
 
 import jakarta.validation.constraints.NotBlank;
 

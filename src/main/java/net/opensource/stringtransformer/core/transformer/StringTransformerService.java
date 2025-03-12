@@ -2,8 +2,9 @@ package net.opensource.stringtransformer.core.transformer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.opensource.stringtransformer.data.StringTransformRequest;
-import net.opensource.stringtransformer.data.TransformerData;
+import net.opensource.stringtransformer.core.TransformerInvocationService;
+import net.opensource.stringtransformer.data.dto.StringTransformRequest;
+import net.opensource.stringtransformer.data.dto.TransformerData;
 import net.opensource.stringtransformer.exception.instances.StringTransformerNotFound;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,16 @@ public class StringTransformerService {
 
     private final Map<String, StringTransformer<?>> nameToStringTransformer;
     private final ObjectMapper objectMapper;
+    private final TransformerInvocationService transformerInvocationService;
 
-    public StringTransformerService(List<StringTransformer<?>> nameToStringTransformer, ObjectMapper objectMapper) {
+    public StringTransformerService(List<StringTransformer<?>> nameToStringTransformer,
+                                    ObjectMapper objectMapper,
+                                    TransformerInvocationService transformerInvocationService) {
         this.nameToStringTransformer = nameToStringTransformer.stream()
                                                               .collect(toMap(StringTransformer::transformerName,
                                                                              Function.identity()));
         this.objectMapper = objectMapper;
+        this.transformerInvocationService = transformerInvocationService;
     }
 
     public String transform(StringTransformRequest transformRequest) {
@@ -31,6 +36,7 @@ public class StringTransformerService {
 
         for (TransformerData data : transformRequest.transformersData()) {
             value = applyTransformer(transformRequest.value(), getTransformer(data), data.parameters());
+            transformerInvocationService.save(data.transformerName());
         }
 
         return value;

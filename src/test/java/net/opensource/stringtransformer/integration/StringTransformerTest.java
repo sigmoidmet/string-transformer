@@ -1,17 +1,30 @@
 package net.opensource.stringtransformer.integration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import net.opensource.stringtransformer.data.StringTransformRequest;
-import net.opensource.stringtransformer.data.TransformerData;
-import net.opensource.stringtransformer.data.parameters.RegexBasedMatchesRemovalStringTransformerParameters;
-import net.opensource.stringtransformer.data.parameters.RegexBasedMatchesReplacingStringTransformerParameters;
+import net.opensource.stringtransformer.data.dto.StringTransformRequest;
+import net.opensource.stringtransformer.data.dto.TransformerData;
+import net.opensource.stringtransformer.data.dto.parameters.RegexBasedMatchesRemovalStringTransformerParameters;
+import net.opensource.stringtransformer.data.dto.parameters.RegexBasedMatchesReplacingStringTransformerParameters;
 import net.opensource.stringtransformer.integration.harness.IntegrationTestBase;
+import net.opensource.stringtransformer.repository.TransformerInvocationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static org.assertj.core.api.IterableAssert.assertThatIterable;
+
 public class StringTransformerTest extends IntegrationTestBase {
+
+    @Autowired
+    TransformerInvocationRepository transformerInvocationRepository;
+
+    @BeforeEach
+    public void beforeEach() {
+        transformerInvocationRepository.deleteAll();
+    }
 
     @Test
     void whenTransformerNotExists_shouldReturn404() {
@@ -62,6 +75,11 @@ public class StringTransformerTest extends IntegrationTestBase {
 
         putSuccessful("/transform", stringTransformRequest)
                 .jsonPath("$").isEqualTo("So i don't know how to use commas please remove all of them");
+
+        assertThatIterable(transformerInvocationRepository.findAll())
+                .singleElement()
+                .extracting("transformerName")
+                .isEqualTo("regex-based-matches-removal-transformer");
     }
 
     @Test
@@ -73,6 +91,11 @@ public class StringTransformerTest extends IntegrationTestBase {
 
         putSuccessful("/transform", stringTransformRequest)
                 .jsonPath("$").isEqualTo("I think if you replace my current bank account balance of 1000000$ with something bigger, I will be rich!");
+
+        assertThatIterable(transformerInvocationRepository.findAll())
+                .singleElement()
+                .extracting("transformerName")
+                .isEqualTo("regex-based-matches-replacing-transformer");
     }
 
     @Test
@@ -83,6 +106,11 @@ public class StringTransformerTest extends IntegrationTestBase {
 
         putSuccessful("/transform", stringTransformRequest)
                 .jsonPath("$").isEqualTo("I WANT TO GROW BIGGER!");
+
+        assertThatIterable(transformerInvocationRepository.findAll())
+                .singleElement()
+                .extracting("transformerName")
+                .isEqualTo("upper-case-transformer");
     }
 
     @Test
@@ -93,6 +121,11 @@ public class StringTransformerTest extends IntegrationTestBase {
 
         putSuccessful("/transform", stringTransformRequest)
                 .jsonPath("$").isEqualTo("how to disable caps lock?!");
+
+        assertThatIterable(transformerInvocationRepository.findAll())
+                .singleElement()
+                .extracting("transformerName")
+                .isEqualTo("lower-case-transformer");
     }
 
     private StringTransformRequest requestData(String value, TransformerData... transformersData) {
