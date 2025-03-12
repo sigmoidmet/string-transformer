@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.opensource.stringtransformer.core.TransformerInvocationService;
 import net.opensource.stringtransformer.data.dto.StringTransformRequest;
 import net.opensource.stringtransformer.data.dto.TransformerData;
-import net.opensource.stringtransformer.exception.instances.StringTransformerNotFound;
+import net.opensource.stringtransformer.exception.instances.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class StringTransformerService {
     private StringTransformer<?> getTransformer(TransformerData data) {
         StringTransformer<?> stringTransformer = nameToStringTransformer.get(data.transformerName());
         if (stringTransformer == null) {
-            throw new StringTransformerNotFound(data.transformerName() + " not exists.");
+            throw new NotFoundException(data.transformerName() + " not exists.");
         }
         return stringTransformer;
     }

@@ -1,2 +1,2 @@
 mongock:
-  change-logs-scan-package: net.opensource.stringtransformer.migrations
+  change-logs-scan-package: net.opensource.stringtransformer.infrastructure.migrations

@@ -26,6 +26,7 @@ dependencies {
             platform("io.mongock:mongock-bom:$mongockVersion"),
             "io.mongock:mongock-springboot-v3",
             "io.mongock:mongodb-springdata-v4-driver",
+            "com.fasterxml.jackson.dataformat:jackson-dataformat-csv",
     )
 
     compileOnly "org.projectlombok:lombok:$lombokVersion"

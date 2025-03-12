@@ -1,5 +1,6 @@
 package net.opensource.stringtransformer.integration;
 
+import lombok.SneakyThrows;
 import net.opensource.stringtransformer.data.domain.TransformerInvocation;
 import net.opensource.stringtransformer.integration.harness.IntegrationTestBase;
 import net.opensource.stringtransformer.repository.TransformerInvocationRepository;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TransformerInvocationTest extends IntegrationTestBase {
 
@@ -73,5 +76,21 @@ public class TransformerInvocationTest extends IntegrationTestBase {
     public void findAllExecutionsInBetween_whenProvidedIncorrectSize_shouldReturn400() {
         get("/transformer-invocations?from=" + from + "&to=" + to + "&pageSize=100000000")
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SneakyThrows
+    public void calculateStatisticsInCsv() {
+        String csvStatistics = getSuccessful("/transformer-invocations/statistics?from=" + from + "&expectedType=text/csv",
+                                             String.class);
+        assertEquals(4, csvStatistics.split("\\n").length);
+    }
+
+    @Test
+    @SneakyThrows
+    public void calculateStatisticsInPlainText() {
+        String csvStatistics = getSuccessful("/transformer-invocations/statistics?from=" + from + "&expectedType=text/plain",
+                                             String.class);
+        assertEquals(1, csvStatistics.split("\\n").length);
     }
 }

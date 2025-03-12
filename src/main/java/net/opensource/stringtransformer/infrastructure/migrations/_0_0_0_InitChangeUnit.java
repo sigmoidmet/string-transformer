@@ -1,4 +1,4 @@
-package net.opensource.stringtransformer.migrations;
+package net.opensource.stringtransformer.infrastructure.migrations;
 
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;
