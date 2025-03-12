@@ -1,23 +1,24 @@
 package net.opensource.stringtransformer.core.transformer;
 
-import jakarta.annotation.Nullable;
+import com.fasterxml.jackson.core.type.TypeReference;
+import net.opensource.stringtransformer.data.parameters.EmptyTransformParameters;
 
-public interface ParameterlessStringTransformer extends StringTransformer<Void> {
-
-    @Override
-    default void validateParameters(@Nullable Void parameters) {
-        // we don't care what parameters are given as we don't expect any parameters at all
-    }
+public interface ParameterlessStringTransformer extends StringTransformer<EmptyTransformParameters> {
 
     @Override
-    default String transform(String value, Void parameters) {
+    default String transform(String value, EmptyTransformParameters parameters) {
         return transform(value);
     }
 
     String transform(String value);
 
     @Override
-    default Class<Void> parametersType() {
-        return Void.class;
+    default TypeReference<EmptyTransformParameters> parametersType() {
+        return new TypeReference<>(){};
+    }
+
+    @Override
+    default EmptyTransformParameters defaultParameters() {
+        return EmptyTransformParameters.INSTANCE;
     }
 }

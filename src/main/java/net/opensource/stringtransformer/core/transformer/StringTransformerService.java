@@ -2,9 +2,9 @@ package net.opensource.stringtransformer.core.transformer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.Nullable;
 import net.opensource.stringtransformer.data.StringTransformRequest;
 import net.opensource.stringtransformer.data.TransformerData;
+import net.opensource.stringtransformer.exception.instances.StringTransformerNotFound;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,24 +30,28 @@ public class StringTransformerService {
         String value = transformRequest.value();
 
         for (TransformerData data : transformRequest.transformersData()) {
-            value = applyTransformer(transformRequest.value(),
-                                     nameToStringTransformer.get(data.transformerName()),
-                                     data.parameters());
+            value = applyTransformer(transformRequest.value(), getTransformer(data), data.parameters());
         }
 
         return value;
     }
 
+    private StringTransformer<?> getTransformer(TransformerData data) {
+        StringTransformer<?> stringTransformer = nameToStringTransformer.get(data.transformerName());
+        if (stringTransformer == null) {
+            throw new StringTransformerNotFound(data.transformerName() + " not exists.");
+        }
+        return stringTransformer;
+    }
+
     private <T> String applyTransformer(String value,
                                         StringTransformer<T> stringTransformer,
-                                        @Nullable JsonNode rawParameters) {
-        T parameters = null;
+                                        JsonNode rawParameters) {
+        T parameters = stringTransformer.defaultParameters();
 
-        if (rawParameters != null) {
+        if (!rawParameters.isNull()) {
             parameters = objectMapper.convertValue(rawParameters, stringTransformer.parametersType());
         }
-
-        stringTransformer.validateParameters(parameters);
 
         return stringTransformer.transform(value, parameters);
     }

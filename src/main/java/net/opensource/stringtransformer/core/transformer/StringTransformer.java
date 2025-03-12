@@ -1,14 +1,21 @@
 package net.opensource.stringtransformer.core.transformer;
 
-import jakarta.annotation.Nullable;
+import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public interface StringTransformer<T> {
 
-    void validateParameters(T parameters);
+    String transform(String value, @Valid @NotNull T parameters);
 
-    String transform(String value, @Nullable T parameters);
-
-    Class<T> parametersType();
+    TypeReference<T> parametersType();
 
     String transformerName();
+
+    // If your parameters are optional, you need to override it, otherwise it will result in 400 client error
+    default T defaultParameters() {
+        return null;
+    }
 }
